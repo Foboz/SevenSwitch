@@ -205,10 +205,12 @@ import QuartzCore
     /*
     *   Initialization
     */
-    public convenience init() {
+    convenience public init() {
         self.init(frame: CGRectMake(0, 0, 50, 30))
-    }
     
+        self.setup()
+    }
+  
     required public init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
