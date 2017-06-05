@@ -106,7 +106,6 @@
 {
   if (self.on && !self.isTracking) {
     _backgroundView.backgroundColor = onTintColor;
-    _backgroundView.layer.borderColor = onTintColor.CGColor;
   }
   _onTintColor = onTintColor;
 }
@@ -149,15 +148,39 @@
 {
   if (rounded) {
     _backgroundView.layer.cornerRadius = CGRectGetHeight(self.frame) * 0.5;
-    _thumbView.layer.cornerRadius = CGRectGetHeight(self.frame) * 0.5 - 1.0;
+    _thumbView.layer.cornerRadius = CGRectGetHeight(self.frame) * 0.5;
   } else {
-    _backgroundView.layer.cornerRadius = 2.0;
-    _thumbView.layer.cornerRadius = 2.0;
+    _backgroundView.layer.cornerRadius = self.cornerRadius;
+    _thumbView.layer.cornerRadius = self.cornerRadius;
   }
   _thumbView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
   _rounded = rounded;
 }
-  
+
+- (void)setCornerRadius:(CGFloat)cornerRadius
+{
+  if (!self.rounded) {
+    _backgroundView.layer.cornerRadius = cornerRadius;
+    _thumbView.layer.cornerRadius = cornerRadius;
+  }
+  _cornerRadius = cornerRadius;
+}
+
+- (void)setThumbOffset:(CGFloat)thumbOffset
+{
+  // thumb
+  CGRect frame = self.frame;
+  CGFloat normalKnobWidth = CGRectGetHeight(frame) - thumbOffset * 2.0;
+  if (self.on) {
+    _thumbView.frame = CGRectMake(CGRectGetWidth(frame) - (normalKnobWidth + thumbOffset), thumbOffset, CGRectGetHeight(frame) - thumbOffset * 2.0, normalKnobWidth);
+    _thumbImageView.frame = CGRectMake(CGRectGetWidth(frame) - normalKnobWidth, 0.0, normalKnobWidth, normalKnobWidth);
+  } else {
+    _thumbView.frame = CGRectMake(thumbOffset, thumbOffset, normalKnobWidth, normalKnobWidth);
+    _thumbImageView.frame = CGRectMake(0.0, 0.0, normalKnobWidth, normalKnobWidth);
+  }
+  _thumbOffset = thumbOffset;
+}
+
 - (void)setThumbImage:(UIImage *)thumbImage
 {
   _thumbImageView.image = thumbImage;
@@ -203,6 +226,8 @@
   self.thumbTintColor = [UIColor whiteColor];
   self.onThumbTintColor = [UIColor whiteColor];
   self.rounded = YES;
+  self.cornerRadius = 2.0;
+  self.thumbOffset = 1.0;
   
   // background
   self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame))];
@@ -239,9 +264,9 @@
   [_backgroundView addSubview:_offLabel];
 
   // thumb
-  self.thumbView = [[UIView alloc] initWithFrame:CGRectMake(1.0, 1.0, CGRectGetHeight(self.frame) - 2.0, CGRectGetHeight(self.frame) - 2.0)];
+  self.thumbView = [[UIView alloc] initWithFrame:CGRectMake(self.thumbOffset, self.thumbOffset, CGRectGetHeight(self.frame) - self.thumbOffset * 2.0, CGRectGetHeight(self.frame) - self.thumbOffset * 2.0)];
   _thumbView.backgroundColor = self.thumbTintColor;
-  _thumbView.layer.cornerRadius = CGRectGetHeight(self.frame) * 0.5 - 1.0;
+  _thumbView.layer.cornerRadius = CGRectGetHeight(self.frame) * 0.5 + self.thumbOffset;
   _thumbView.layer.shadowColor = self.shadowColor.CGColor;
   _thumbView.layer.shadowRadius = 2.0;
   _thumbView.layer.shadowOpacity = 0.5;
@@ -267,12 +292,12 @@
   startTrackingValue = self.on;
   didChangeWhileTracking = NO;
   
-  CGFloat activeKnobWidth = CGRectGetHeight(self.bounds) - 2.0 + 5.0;
+  CGFloat activeKnobWidth = CGRectGetHeight(self.bounds) - self.thumbOffset * 2.0 + 5.0;
   _isAnimating = YES;
   
   [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
     if (self.on) {
-      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + 1.0), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
+      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + self.thumbOffset), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
       self.backgroundView.backgroundColor = self.onTintColor;
       self.thumbView.backgroundColor = self.onThumbTintColor;
     } else {
@@ -286,10 +311,11 @@
   
   CABasicAnimation *shadowAnim = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
   shadowAnim.duration = 0.3;
-  shadowAnim.fromValue = (id)(_thumbView.layer.shadowPath);
+  shadowAnim.fromValue = (id)(_thumbView.layer.presentationLayer.shadowPath);
   shadowAnim.toValue = (id)([UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath);
-  [_thumbView.layer addAnimation:shadowAnim forKey:@"shadowPath"];
+  shadowAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
   _thumbView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
+  [_thumbView.layer addAnimation:shadowAnim forKey:@"shadowPath"];
   
   return YES;
 }
@@ -355,7 +381,7 @@
 
     // background
     _backgroundView.frame = CGRectMake(0.0, 0.0, CGRectGetWidth(frame), CGRectGetHeight(frame));
-    _backgroundView.layer.cornerRadius = self.isRounded ? CGRectGetHeight(frame) * 0.5 : 2.0;
+    _backgroundView.layer.cornerRadius = self.isRounded ? CGRectGetHeight(frame) * 0.5 : self.cornerRadius;
 
     // images
     _onImageView.frame = CGRectMake(0.0, 0.0, CGRectGetWidth(frame) - CGRectGetHeight(frame), CGRectGetHeight(frame));
@@ -364,16 +390,16 @@
     self.offLabel.frame = CGRectMake(CGRectGetHeight(frame), 0.0, CGRectGetWidth(frame) - CGRectGetHeight(frame), CGRectGetHeight(frame));
 
     // thumb
-    CGFloat normalKnobWidth = CGRectGetHeight(frame) - 2.0;
+    CGFloat normalKnobWidth = CGRectGetHeight(frame) - self.thumbOffset * 2.0;
     if (self.on) {
-      _thumbView.frame = CGRectMake(CGRectGetWidth(frame) - (normalKnobWidth + 1.0), 1.0, CGRectGetHeight(frame) - 2.0, normalKnobWidth);
+      _thumbView.frame = CGRectMake(CGRectGetWidth(frame) - (normalKnobWidth + self.thumbOffset), self.thumbOffset, CGRectGetHeight(frame) - self.thumbOffset * 2.0, normalKnobWidth);
       _thumbImageView.frame = CGRectMake(CGRectGetWidth(frame) - normalKnobWidth, 0.0, normalKnobWidth, normalKnobWidth);
     } else {
-      _thumbView.frame = CGRectMake(1.0, 1.0, normalKnobWidth, normalKnobWidth);
+      _thumbView.frame = CGRectMake(self.thumbOffset, self.thumbOffset, normalKnobWidth, normalKnobWidth);
       _thumbImageView.frame = CGRectMake(0.0, 0.0, normalKnobWidth, normalKnobWidth);
     }
 
-    _thumbView.layer.cornerRadius = self.isRounded ? CGRectGetHeight(frame) * 0.5 - 1.0 : 2.0;
+    _thumbView.layer.cornerRadius = self.isRounded ? CGRectGetHeight(frame) * 0.5 - self.thumbOffset : self.cornerRadius - 1.0;
     _thumbView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
   }
 }
@@ -384,18 +410,17 @@
  */
 - (void) showOn:(BOOL)animated
 {
-  CGFloat normalKnobWidth = CGRectGetHeight(self.bounds) - 2.0;
+  CGFloat normalKnobWidth = CGRectGetHeight(self.bounds) - self.thumbOffset * 2.0;
   CGFloat activeKnobWidth = normalKnobWidth + 5.0;
   if (animated) {
     _isAnimating = YES;
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
       if (self.isTracking) {
-        self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + 1.0), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
+        self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + self.thumbOffset), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
       } else {
-        self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (normalKnobWidth + 1.0), CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
+        self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (normalKnobWidth + self.thumbOffset), CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
       }
       self.backgroundView.backgroundColor = self.onTintColor;
-      self.backgroundView.layer.borderColor = self.onTintColor.CGColor;
       self.thumbView.backgroundColor = self.onThumbTintColor;
       self.onImageView.alpha = 1.0;
       self.offImageView.alpha = 0.0;
@@ -407,19 +432,18 @@
   
     CABasicAnimation *shadowAnim = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
     shadowAnim.duration = 0.3;
-    shadowAnim.fromValue = (id)(_thumbView.layer.shadowPath);
+    shadowAnim.fromValue = (id)(_thumbView.layer.presentationLayer.shadowPath);
     shadowAnim.toValue = (id)[UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
     [_thumbView.layer addAnimation:shadowAnim forKey:@"shadowPath"];
     _thumbView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
   } else {
     if (self.isTracking) {
-      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + 1.0), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
+      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (activeKnobWidth + self.thumbOffset), CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
     } else {
-      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (normalKnobWidth + 1.0), CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
+      self.thumbView.frame = CGRectMake(CGRectGetWidth(self.bounds) - (normalKnobWidth + self.thumbOffset), CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
     }
 
     _backgroundView.backgroundColor = self.onTintColor;
-    _backgroundView.layer.borderColor = self.onTintColor.CGColor;
     _thumbView.backgroundColor = self.onThumbTintColor;
     _onImageView.alpha = 1.0;
     _offImageView.alpha = 0.0;
@@ -432,17 +456,17 @@
   
 - (void) showOff:(BOOL)animated
 {
-  CGFloat normalKnobWidth = CGRectGetHeight(self.bounds) - 2.0;
+  CGFloat normalKnobWidth = CGRectGetHeight(self.bounds) - self.thumbOffset * 2.0;
   CGFloat activeKnobWidth = normalKnobWidth + 5.0;
   
   if (animated) {
     _isAnimating = YES;
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionBeginFromCurrentState animations:^{
       if (self.isTracking) {
-        self.thumbView.frame = CGRectMake(1.0, CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
+        self.thumbView.frame = CGRectMake(self.thumbOffset, CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
         self.backgroundView.backgroundColor = self.activeColor;
       } else {
-        self.thumbView.frame = CGRectMake(1.0, CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
+        self.thumbView.frame = CGRectMake(self.thumbOffset, CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
         self.backgroundView.backgroundColor = self.inactiveColor;
       }
       
@@ -458,16 +482,16 @@
 
     CABasicAnimation *shadowAnim = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
     shadowAnim.duration = 0.3;
-    shadowAnim.fromValue = (id)_thumbView.layer.shadowPath;
+    shadowAnim.fromValue = (id)(_thumbView.layer.presentationLayer.shadowPath);
     shadowAnim.toValue = (id)[UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
     [_thumbView.layer addAnimation:shadowAnim forKey:@"shadowPath"];
     _thumbView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_thumbView.bounds cornerRadius:_thumbView.layer.cornerRadius].CGPath;
   } else {
     if (self.isTracking) {
-      self.thumbView.frame = CGRectMake(1.0, CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
+      self.thumbView.frame = CGRectMake(self.thumbOffset, CGRectGetMinY(self.thumbView.frame), activeKnobWidth, CGRectGetHeight(self.thumbView.frame));
       self.backgroundView.backgroundColor = self.activeColor;
     } else {
-      self.thumbView.frame = CGRectMake(1.0, CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
+      self.thumbView.frame = CGRectMake(self.thumbOffset, CGRectGetMinY(self.thumbView.frame), normalKnobWidth, CGRectGetHeight(self.thumbView.frame));
       self.backgroundView.backgroundColor = self.inactiveColor;
     }
     _backgroundView.layer.borderColor = self.borderColor.CGColor;

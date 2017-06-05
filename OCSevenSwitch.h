@@ -68,7 +68,17 @@ IB_DESIGNABLE
  *   Set to NO to get a stylish square switch.
  *   Defaults to YES.
  */
-@property (nonatomic, getter=isRounded) BOOL rounded;
+@property (nonatomic, getter=isRounded) IBInspectable BOOL rounded;
+/*
+ *  Using while rounded is NO to control cornerRadius
+ *  Default is 2.0
+ */
+@property (nonatomic) IBInspectable CGFloat cornerRadius;
+/*
+ *  Offset between control border and thumb border. Also used as cornerRadius of thumb
+ *  Default is 1.0
+ */
+@property (nonatomic) IBInspectable CGFloat thumbOffset;
 /*
  *   Sets the image that shows on the switch thumb.
  */
