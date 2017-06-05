@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4593DA6219561C05006EB924 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593DA6119561C05006EB924 /* AppDelegate.swift */; };
-		4593DA6319561C5C006EB924 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4593DA5D19560DB4006EB924 /* ViewController.swift */; };
 		45B6529F176E3A440006F201 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 45B6529B176E3A440006F201 /* check.png */; };
 		45B652A0176E3A440006F201 /* check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45B6529C176E3A440006F201 /* check@2x.png */; };
 		45B652A1176E3A440006F201 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 45B6529D176E3A440006F201 /* cross.png */; };
@@ -22,10 +21,11 @@
 		45F7C646176D202700AE1301 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F7C645176D202700AE1301 /* Default@2x.png */; };
 		45F7C648176D202700AE1301 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F7C647176D202700AE1301 /* Default-568h@2x.png */; };
 		45F7C64B176D202700AE1301 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F7C649176D202700AE1301 /* MainStoryboard.storyboard */; };
+		56C2A9EA1EE5878D007E7A2B /* OCSevenSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 56C2A9E91EE5878D007E7A2B /* OCSevenSwitch.m */; };
+		56C2A9EE1EE59FA8007E7A2B /* OCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F7C64D176D202700AE1301 /* OCViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4593DA5D19560DB4006EB924 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4593DA6119561C05006EB924 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45B6529B176E3A440006F201 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		45B6529C176E3A440006F201 /* check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check@2x.png"; sourceTree = "<group>"; };
@@ -42,8 +42,10 @@
 		45F7C645176D202700AE1301 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		45F7C647176D202700AE1301 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		45F7C64A176D202700AE1301 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		45F7C64C176D202700AE1301 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		45F7C64D176D202700AE1301 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		45F7C64C176D202700AE1301 /* OCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCViewController.h; sourceTree = "<group>"; };
+		45F7C64D176D202700AE1301 /* OCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCViewController.m; sourceTree = "<group>"; };
+		56C2A9E81EE5878D007E7A2B /* OCSevenSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OCSevenSwitch.h; path = ../../OCSevenSwitch.h; sourceTree = "<group>"; };
+		56C2A9E91EE5878D007E7A2B /* OCSevenSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OCSevenSwitch.m; path = ../../OCSevenSwitch.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,10 +93,11 @@
 			isa = PBXGroup;
 			children = (
 				4593DA6119561C05006EB924 /* AppDelegate.swift */,
-				45F7C64C176D202700AE1301 /* ViewController.h */,
-				45F7C64D176D202700AE1301 /* ViewController.m */,
-				4593DA5D19560DB4006EB924 /* ViewController.swift */,
 				45DD2ABD1954C14B0028A5DB /* SevenSwitch.swift */,
+				45F7C64C176D202700AE1301 /* OCViewController.h */,
+				45F7C64D176D202700AE1301 /* OCViewController.m */,
+				56C2A9E81EE5878D007E7A2B /* OCSevenSwitch.h */,
+				56C2A9E91EE5878D007E7A2B /* OCSevenSwitch.m */,
 				45F7C649176D202700AE1301 /* MainStoryboard.storyboard */,
 				45B6529B176E3A440006F201 /* check.png */,
 				45B6529C176E3A440006F201 /* check@2x.png */,
@@ -149,7 +152,7 @@
 				ORGANIZATIONNAME = "Ben Vogelzang";
 				TargetAttributes = {
 					45F7C62D176D202700AE1301 = {
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -195,8 +198,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				45DD2ABE1954C14B0028A5DB /* SevenSwitch.swift in Sources */,
-				4593DA6319561C5C006EB924 /* ViewController.swift in Sources */,
+				56C2A9EE1EE59FA8007E7A2B /* OCViewController.m in Sources */,
 				4593DA6219561C05006EB924 /* AppDelegate.swift in Sources */,
+				56C2A9EA1EE5878D007E7A2B /* OCSevenSwitch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,7 +288,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SevenSwitchExample/SevenSwitchExample-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "SevenSwitchExample/SevenSwitchExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -303,7 +307,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SevenSwitchExample/SevenSwitchExample-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "SevenSwitchExample/SevenSwitchExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

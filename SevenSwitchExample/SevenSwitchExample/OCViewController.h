@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SevenSwitch;
+@class OCSevenSwitch;
 
 
-@interface ViewController : UIViewController
+@interface OCViewController : UIViewController
 
-@property (nonatomic, strong) IBOutlet SevenSwitch *ibSwitch;
+@property (nonatomic, strong) IBOutlet OCSevenSwitch *ibSwitch;
 
 @end
